@@ -1,0 +1,10 @@
+dao/InterfaceDAO.class
+service/ChequeService.class
+repository/ChequeRepository.class
+main/Main.class
+model/Ecole.class
+model/Cheque.class
+model/Student.class
+dao/ObjectDAO.class
+mapping/Mapping.class
+connection/UtilDB.class

@@ -1,34 +1,21 @@
 package service;
 
 import model.Demande;
+import repository.DemandeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.DemandeRepository;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DemandeService {
-    @Autowired
-    private DemandeRepository demandeRepository;
 
-    public void createDemande(Demande demande) {
-        demandeRepository.save(demande);
-    }
+	@Autowired
+	private DemandeRepository demandeRepository;
 
-    public List<Demande> getAllDemandes() {
-        return demandeRepository.findAll();
-    }
-
-    public Demande getDemandeById(int id) {
-        return demandeRepository.findById(id).orElse(null);
-    }
-
-    public void updateDemande(Demande demande) {
-        demandeRepository.save(demande);
-    }
-
-    public void deleteDemande(int id) {
-        demandeRepository.deleteById(id);
-    }
-
+	public Demande createDemande(Demande demande) { return demandeRepository.save(demande); }
+	public List<Demande> getAllDemandes() { return demandeRepository.findAll(); }
+	public Optional<Demande> getDemandeById(Long id) { return demandeRepository.findById(id); }
+	public Demande updateDemande(Demande demande) { return demandeRepository.save(demande); }
+	public void deleteDemande(Long id) { demandeRepository.deleteById(id); }
 }

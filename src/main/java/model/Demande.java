@@ -1,67 +1,42 @@
 package model;
 
-import java.util.Date;
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "demande")
 public class Demande {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", nullable = false)
+	private Long id;
 
-    private String district;
-    private String commune;
-    private String fokontany;
-    private Date date_demande;
-    private String personne_qui_demande;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_client", nullable = false)
+	private Client client;
 
-    @OneToMany(mappedBy = "demande")
-    private List<StatusDemande> statusDemandes;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_commune", nullable = false)
+	private Commune commune;
 
-    // getters & setters
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
-    public String getDistrict() {
-        return district;
-    }
-    public void setDistrict(String district) {
-        this.district = district;
-    }
-    public String getCommune() {
-        return commune;
-    }
-    public void setCommune(String commune) {
-        this.commune = commune;
-    }
-    public String getFokontany() {
-        return fokontany;
-    }
-    public void setFokontany(String fokontany) {
-        this.fokontany = fokontany;
-    }
-    public Date getDateDemande() {
-        return date_demande;
-    }
-    public void setDateDemande(Date date_demande) {
-        this.date_demande = date_demande;
-    }
-    public String getPersonneQuiDemande() {
-        return personne_qui_demande;
-    }
-    public void setPersonneQuiDemande(String personne_qui_demande) {
-        this.personne_qui_demande = personne_qui_demande;
-    }
-    public List<StatusDemande> getStatusDemandes() {
-        return statusDemandes;
-    }
-    public void setStatusDemandes(List<StatusDemande> statusDemandes) {
-        this.statusDemandes = statusDemandes;
-    }
-    
+	@OneToMany(mappedBy = "demande", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<DemandeStatut> demandeStatuts = new ArrayList<>();
+
+	public Demande() {}
+
+	public Demande(Client client, Commune commune) {
+		this.client = client;
+		this.commune = commune;
+	}
+
+	public Long getId() { return id; }
+	public Client getClient() { return client; }
+	public Commune getCommune() { return commune; }
+	public List<DemandeStatut> getDemandeStatuts() { return demandeStatuts; }
+
+	public void setClient(Client client) { this.client = client; }
+	public void setCommune(Commune commune) { this.commune = commune; }
+	public void setDemandeStatuts(List<DemandeStatut> demandeStatuts) { this.demandeStatuts = demandeStatuts; }
 }

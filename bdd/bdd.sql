@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS demande (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     id_client BIGINT NOT NULL,
     id_commune BIGINT NOT NULL,
+    lieu VARCHAR(255) NOT NULL,
     FOREIGN KEY (id_client) REFERENCES client(id) ON DELETE CASCADE,
     FOREIGN KEY (id_commune) REFERENCES commune(id) ON DELETE CASCADE
 );

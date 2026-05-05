@@ -1,6 +1,8 @@
 package model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,9 +19,11 @@ public class Commune {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_district", nullable = false)
+	@JsonBackReference("district-communes")
 	private District district;
 
 	@OneToMany(mappedBy = "commune")
+	@JsonBackReference("commune-demandes")
 	private List<Demande> demandes = new ArrayList<>();
 
 	public Commune() {}

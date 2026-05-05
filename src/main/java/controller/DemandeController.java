@@ -53,20 +53,30 @@ public class DemandeController {
 	}
 
 	@PostMapping("/create")
-	public String createDemande(@RequestParam Long clientId, @RequestParam Long communeId, Model model) {
+	public String createDemande(
+			@RequestParam Long clientId, 
+			@RequestParam Long communeId, 
+			@RequestParam String lieu,
+			Model model) {
 		try {
 			Client client = clientService.getClientById(clientId).orElse(null);
 			Commune commune = communeService.getCommuneById(communeId).orElse(null);
+			
 			if (client != null && commune != null) {
 				Demande demande = new Demande(client, commune);
-				demandeService.createDemande(demande);
+				demande.setLieu(lieu);
+				
+				Demande savedDemande = demandeService.createDemande(demande);
+				
 				model.addAttribute("message", "Demande créée avec succès");
+				model.addAttribute("demande", savedDemande);
 				return "demande/success";
 			} else {
 				model.addAttribute("error", "Client ou Commune non trouvés");
 				return showForm(model);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			model.addAttribute("error", "Erreur: " + e.getMessage());
 			return showForm(model);
 		}

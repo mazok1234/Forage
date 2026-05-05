@@ -1,6 +1,7 @@
 package model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class Region {
 	private String libelle;
 
 	@OneToMany(mappedBy = "region", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference("region-districts")
 	private List<District> districts = new ArrayList<>();
 
 	public Region() {}

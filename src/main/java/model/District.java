@@ -1,6 +1,8 @@
 package model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +20,11 @@ public class District {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_region", nullable = false)
+	@JsonBackReference("region-districts")
 	private Region region;
 
 	@OneToMany(mappedBy = "district", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference("district-communes")
 	private List<Commune> communes = new ArrayList<>();
 
 	public District() {}

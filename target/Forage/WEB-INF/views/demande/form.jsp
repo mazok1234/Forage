@@ -51,9 +51,10 @@
             <option value="">-- Sélectionner une commune --</option>
         </select>
     </div>
-    <div class="lieu">
+
+    <div class="form-group">
         <label for="lieu">Lieu :</label>
-        <input type="text" name="lieu" id="lieu" required>
+        <input type="text" name="lieu" id="lieu" required placeholder="Entrer le lieu">
     </div>
 
     <button type="submit">Créer la Demande</button>

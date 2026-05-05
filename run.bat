@@ -2,16 +2,16 @@
 setlocal
 
 set "TOMCAT=C:\Tomcat10\apache-tomcat-10.1.24"
-set "CONTEXT=ManagerApp"
-set "OLD_CONTEXT=Forage"
+set "CONTEXT=Forage"
+set "OLD_CONTEXT=ManagerApp"
 set "WARPATH=%TOMCAT%\webapps\%CONTEXT%.war"
 set "ZIPPATH=%TEMP%\%CONTEXT%.zip"
 
 echo Deploy %CONTEXT% to %WARPATH%
 if not exist "%TOMCAT%\bin\startup.bat" goto :ERR_TOMCAT
 
-if not defined CATALINA_HOME set "CATALINA_HOME=%TOMCAT%"
-if not defined CATALINA_BASE set "CATALINA_BASE=%TOMCAT%"
+set "CATALINA_HOME=%TOMCAT%"
+set "CATALINA_BASE=%TOMCAT%"
 if not exist "%TOMCAT%\temp" mkdir "%TOMCAT%\temp"
 
 echo Stopping Tomcat...
@@ -27,7 +27,7 @@ if /I not "%OLD_CONTEXT%"=="%CONTEXT%" (
 
 echo Building project (mvn clean package)...
 cd /d "%~dp0" >nul
-mvn clean package
+call mvn clean package
 if errorlevel 1 (
   echo Maven build failed; will attempt WAR creation from current folder
   set BUILD_FAILED=1

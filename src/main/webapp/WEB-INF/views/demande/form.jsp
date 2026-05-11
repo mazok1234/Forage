@@ -2,7 +2,11 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <html>
 <head>
-    <title>Nouvelle Demande</title>
+    <c:set var="resolvedTitle" value="${empty pageTitle ? 'Nouvelle Demande' : pageTitle}" />
+    <c:set var="resolvedFormTitle" value="${empty formTitle ? 'Creer une Nouvelle Demande' : formTitle}" />
+    <c:set var="resolvedFormAction" value="${empty formAction ? '/demande/create' : formAction}" />
+    <c:set var="resolvedSubmitLabel" value="${empty submitLabel ? 'Creer la Demande' : submitLabel}" />
+    <title>${resolvedTitle}</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         .form-group { margin-bottom: 15px; }
@@ -11,19 +15,26 @@
         button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; }
         button:hover { background-color: #0056b3; }
         .error { color: red; }
+        .actions { margin-bottom: 15px; }
     </style>
 </head>
 <body>
-<h1>Créer une Nouvelle Demande</h1>
+<h1>${resolvedFormTitle}</h1>
+<div class="actions">
+    <a href="${pageContext.request.contextPath}/demande/list">Voir la liste des demandes</a>
+</div>
 <c:if test="${not empty error}"><p class="error">${error}</p></c:if>
 
-<form method="post" action="${pageContext.request.contextPath}/demande/create">
+<form method="post" action="${pageContext.request.contextPath}${resolvedFormAction}">
+    <c:if test="${not empty demande.id}">
+        <input type="hidden" name="id" value="${demande.id}">
+    </c:if>
     <div class="form-group">
         <label for="client">Client :</label>
         <select name="clientId" id="client" required>
             <option value="">-- Sélectionner un client --</option>
             <c:forEach var="client" items="${clients}">
-                <option value="${client.id}">${client.nom}</option>
+                <option value="${client.id}" <c:if test="${client.id == selectedClientId}">selected</c:if>>${client.nom}</option>
             </c:forEach>
         </select>
     </div>
@@ -33,7 +44,7 @@
         <select name="regionId" id="region" required onchange="loadDistricts()">
             <option value="">-- Sélectionner une région --</option>
             <c:forEach var="region" items="${regions}">
-                <option value="${region.id}">${region.libelle}</option>
+                <option value="${region.id}" <c:if test="${region.id == selectedRegionId}">selected</c:if>>${region.libelle}</option>
             </c:forEach>
         </select>
     </div>
@@ -42,6 +53,9 @@
         <label for="district">District :</label>
         <select name="districtId" id="district" required onchange="loadCommunes()">
             <option value="">-- Sélectionner un district --</option>
+            <c:forEach var="district" items="${districts}">
+                <option value="${district.id}" <c:if test="${district.id == selectedDistrictId}">selected</c:if>>${district.libelle}</option>
+            </c:forEach>
         </select>
     </div>
 
@@ -49,15 +63,18 @@
         <label for="commune">Commune :</label>
         <select name="communeId" id="commune" required>
             <option value="">-- Sélectionner une commune --</option>
+            <c:forEach var="commune" items="${communes}">
+                <option value="${commune.id}" <c:if test="${commune.id == selectedCommuneId}">selected</c:if>>${commune.libelle}</option>
+            </c:forEach>
         </select>
     </div>
 
     <div class="form-group">
         <label for="lieu">Lieu :</label>
-        <input type="text" name="lieu" id="lieu" required placeholder="Entrer le lieu">
+        <input type="text" name="lieu" id="lieu" required placeholder="Entrer le lieu" value="${demande.lieu}">
     </div>
 
-    <button type="submit">Créer la Demande</button>
+    <button type="submit">${resolvedSubmitLabel}</button>
 </form>
 
 <script>

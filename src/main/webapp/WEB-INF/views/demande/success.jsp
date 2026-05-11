@@ -12,5 +12,7 @@
 <h1>Demande Créée</h1>
 <p class="success">${message}</p>
 <a href="${pageContext.request.contextPath}/demande/">Créer une nouvelle demande</a>
+<br>
+<a href="${pageContext.request.contextPath}/demande/list">Voir la liste des demandes</a>
 </body>
 </html>

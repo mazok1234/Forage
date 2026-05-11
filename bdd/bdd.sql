@@ -58,10 +58,11 @@ CREATE TABLE IF NOT EXISTS demande_statut (
     FOREIGN KEY (id_statut) REFERENCES statut(id) ON DELETE CASCADE,
     FOREIGN KEY (id_demande) REFERENCES demande(id) ON DELETE CASCADE
 );
+CREATE TABLE 
 
--- Insérer quelques données de test
+-- Inserer quelques donnees de test
 INSERT IGNORE INTO region (id, libelle) VALUES (1, 'Analamanga');
 INSERT IGNORE INTO district (id, libelle, id_region) VALUES (1, 'Antananarivo', 1);
 INSERT IGNORE INTO commune (id, libelle, id_district) VALUES (1, 'Antananarivo', 1), (2, 'Avaradrano', 1);
-INSERT IGNORE INTO statut (id, libelle) VALUES (1, 'En attente'), (2, 'En cours'), (3, 'Approuvée'), (4, 'Rejetée');
+INSERT IGNORE INTO statut (id, libelle) VALUES (1, 'En attente'), (2, 'En cours'), (3, 'Approuvee'), (4, 'Rejetee');
 INSERT IGNORE INTO client (id, nom, mdp, contact, adresse) VALUES (1, 'Jean', 'pass123', '+261341234567', 'Rue A, Tana');

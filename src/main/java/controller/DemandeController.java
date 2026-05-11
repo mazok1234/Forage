@@ -18,6 +18,7 @@ import java.util.Map;
 public class DemandeController {
 
 	private record OptionDto(Long id, String libelle) {}
+	private static final Long STATUT_DEMANDE_EN_ATTENTE_ID = 1L;
 
 	@Autowired
 	private DemandeService demandeService;
@@ -110,7 +111,7 @@ public class DemandeController {
 				demande.setLieu(lieu);
 				
 				Demande savedDemande = demandeService.createDemande(demande);
-				statusService.getStatusById(1L).ifPresent(status -> {
+				statusService.getStatusById(STATUT_DEMANDE_EN_ATTENTE_ID).ifPresent(status -> {
 					DemandeStatut demandeStatut = new DemandeStatut(
 						status,
 						savedDemande,

@@ -1,11 +1,14 @@
 D:\Spring-S4\Forage\src\main\java\connection\UtilDB.java
 D:\Spring-S4\Forage\src\main\java\controller\DemandeController.java
+D:\Spring-S4\Forage\src\main\java\controller\DevisController.java
 D:\Spring-S4\Forage\src\main\java\controller\HomeController.java
 D:\Spring-S4\Forage\src\main\java\main\Main.java
 D:\Spring-S4\Forage\src\main\java\model\Client.java
 D:\Spring-S4\Forage\src\main\java\model\Commune.java
 D:\Spring-S4\Forage\src\main\java\model\Demande.java
 D:\Spring-S4\Forage\src\main\java\model\DemandeStatut.java
+D:\Spring-S4\Forage\src\main\java\model\Devis.java
+D:\Spring-S4\Forage\src\main\java\model\DevisStatut.java
 D:\Spring-S4\Forage\src\main\java\model\District.java
 D:\Spring-S4\Forage\src\main\java\model\Region.java
 D:\Spring-S4\Forage\src\main\java\model\Status.java
@@ -13,6 +16,8 @@ D:\Spring-S4\Forage\src\main\java\repository\ClientRepository.java
 D:\Spring-S4\Forage\src\main\java\repository\CommuneRepository.java
 D:\Spring-S4\Forage\src\main\java\repository\DemandeRepository.java
 D:\Spring-S4\Forage\src\main\java\repository\DemandeStatutRepository.java
+D:\Spring-S4\Forage\src\main\java\repository\DevisRepository.java
+D:\Spring-S4\Forage\src\main\java\repository\DevisStatutRepository.java
 D:\Spring-S4\Forage\src\main\java\repository\DistrictRepository.java
 D:\Spring-S4\Forage\src\main\java\repository\RegionRepository.java
 D:\Spring-S4\Forage\src\main\java\repository\StatusRepository.java
@@ -20,6 +25,8 @@ D:\Spring-S4\Forage\src\main\java\service\ClientService.java
 D:\Spring-S4\Forage\src\main\java\service\CommuneService.java
 D:\Spring-S4\Forage\src\main\java\service\DemandeService.java
 D:\Spring-S4\Forage\src\main\java\service\DemandeStatutService.java
+D:\Spring-S4\Forage\src\main\java\service\DevisService.java
+D:\Spring-S4\Forage\src\main\java\service\DevisStatutService.java
 D:\Spring-S4\Forage\src\main\java\service\DistrictService.java
 D:\Spring-S4\Forage\src\main\java\service\RegionService.java
 D:\Spring-S4\Forage\src\main\java\service\StatusService.java

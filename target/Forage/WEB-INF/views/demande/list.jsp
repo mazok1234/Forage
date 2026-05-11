@@ -94,6 +94,8 @@
 
 <div class="actions">
     <a href="${pageContext.request.contextPath}/demande/">Creer une nouvelle demande</a>
+    <a href="${pageContext.request.contextPath}/devis/demandes">Demandes approuvees</a>
+    <a href="${pageContext.request.contextPath}/devis/list">Liste des devis</a>
 </div>
 </body>
 </html>

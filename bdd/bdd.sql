@@ -58,11 +58,28 @@ CREATE TABLE IF NOT EXISTS demande_statut (
     FOREIGN KEY (id_statut) REFERENCES statut(id) ON DELETE CASCADE,
     FOREIGN KEY (id_demande) REFERENCES demande(id) ON DELETE CASCADE
 );
-CREATE TABLE 
+CREATE TABLE IF NOT EXISTS devis (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id_demande BIGINT NOT NULL,
+    libelle VARCHAR(255) NOT NULL,
+    montant DECIMAL(10, 2) NOT NULL,
+    date TIMESTAMP NOT NULL,
+    FOREIGN KEY (id_demande) REFERENCES demande(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS devis_statut (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id_statut BIGINT NOT NULL,
+    id_devis BIGINT NOT NULL,
+    description VARCHAR(500),
+    date TIMESTAMP NOT NULL,
+    FOREIGN KEY (id_statut) REFERENCES statut(id) ON DELETE CASCADE,
+    FOREIGN KEY (id_devis) REFERENCES devis(id) ON DELETE CASCADE
+);
 
 -- Inserer quelques donnees de test
 INSERT IGNORE INTO region (id, libelle) VALUES (1, 'Analamanga');
 INSERT IGNORE INTO district (id, libelle, id_region) VALUES (1, 'Antananarivo', 1);
 INSERT IGNORE INTO commune (id, libelle, id_district) VALUES (1, 'Antananarivo', 1), (2, 'Avaradrano', 1);
-INSERT IGNORE INTO statut (id, libelle) VALUES (1, 'En attente'), (2, 'En cours'), (3, 'Approuvee'), (4, 'Rejetee');
+INSERT IGNORE INTO statut (id, libelle) VALUES (1, 'En attente'), (2, 'Approuvee'), (3, 'Rejetee');
 INSERT IGNORE INTO client (id, nom, mdp, contact, adresse) VALUES (1, 'Jean', 'pass123', '+261341234567', 'Rue A, Tana');

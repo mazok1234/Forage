@@ -1,7 +1,6 @@
 package model;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,47 +9,77 @@ import java.util.List;
 @Table(name = "devis")
 public class Devis {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", nullable = false)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_demande", nullable = false)
-	private Demande demande;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_demande", nullable = false)
+    private Demande demande;
 
-	@Column(name = "libelle", nullable = false, length = 255)
-	private String libelle;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_type_devis", nullable = false)
+    private TypeDevis typeDevis;
 
-	@Column(name = "montant", nullable = false, precision = 10, scale = 2)
-	private BigDecimal montant;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at")
+    private Date createdAt;
 
-	@OneToMany(mappedBy = "devis", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<DevisStatut> devisStatuts = new ArrayList<>();
+    @OneToMany(mappedBy = "devis", cascade = CascadeType.ALL)
+    private List<DevisDetails> devisDetails = new ArrayList<>();
 
-	@Column(name = "date", nullable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date date;
+    @OneToMany(mappedBy = "devis")
+    private List<DevisStatut> devisStatuts = new ArrayList<>();
 
-	public Devis() {}
+    public Devis() {
+    }
 
-	public Devis(Demande demande, String libelle, BigDecimal montant, Date date) {
-		this.demande = demande;
-		this.libelle = libelle;
-		this.montant = montant;
-		this.date = date;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public Long getId() { return id; }
-	public Demande getDemande() { return demande; }
-	public String getLibelle() { return libelle; }
-	public BigDecimal getMontant() { return montant; }
-	public Date getDate() { return date; }
-	public List<DevisStatut> getDevisStatuts() { return devisStatuts; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setDemande(Demande demande) { this.demande = demande; }
-	public void setLibelle(String libelle) { this.libelle = libelle; }
-	public void setMontant(BigDecimal montant) { this.montant = montant; }
-	public void setDate(Date date) { this.date = date; }
-	public void setDevisStatuts(List<DevisStatut> devisStatuts) { this.devisStatuts = devisStatuts; }
+    public Demande getDemande() {
+        return demande;
+    }
+
+    public void setDemande(Demande demande) {
+        this.demande = demande;
+    }
+
+    public TypeDevis getTypeDevis() {
+        return typeDevis;
+    }
+
+    public void setTypeDevis(TypeDevis typeDevis) {
+        this.typeDevis = typeDevis;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public List<DevisDetails> getDevisDetails() {
+        return devisDetails;
+    }
+
+    public void setDevisDetails(List<DevisDetails> devisDetails) {
+        this.devisDetails = devisDetails;
+    }
+
+    public List<DevisStatut> getDevisStatuts() {
+        return devisStatuts;
+    }
+
+    public void setDevisStatuts(List<DevisStatut> devisStatuts) {
+        this.devisStatuts = devisStatuts;
+    }
 }

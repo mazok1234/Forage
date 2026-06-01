@@ -74,6 +74,17 @@
         <input type="text" name="lieu" id="lieu" required placeholder="Entrer le lieu" value="${demande.lieu}">
     </div>
 
+    <c:if test="${empty demande.id}">
+        <div class="form-group">
+            <label for="statutDate">Date statut :</label>
+            <input type="date" name="statutDate" id="statutDate" required value="${defaultDate}">
+        </div>
+        <div class="form-group">
+            <label for="statutTime">Heure statut :</label>
+            <input type="time" name="statutTime" id="statutTime" required value="${defaultTime}">
+        </div>
+    </c:if>
+
     <button type="submit">${resolvedSubmitLabel}</button>
 </form>
 

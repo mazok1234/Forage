@@ -28,12 +28,14 @@ public class Demande {
 	private List<DemandeStatut> demandeStatuts = new ArrayList<>();
 
 	private String lieu;
+	private String reference;
 
 	public Demande() {}
 
-	public Demande(Client client, Commune commune) {
+	public Demande(Client client, Commune commune, String reference) {
 		this.client = client;
 		this.commune = commune;
+		this.reference = reference;
 	}
 
 	public Long getId() { return id; }
@@ -41,9 +43,11 @@ public class Demande {
 	public Commune getCommune() { return commune; }
 	public List<DemandeStatut> getDemandeStatuts() { return demandeStatuts; }
 	public String getLieu() { return lieu; }
+	public String getReference() { return reference; }
 
 	public void setClient(Client client) { this.client = client; }
 	public void setCommune(Commune commune) { this.commune = commune; }
 	public void setDemandeStatuts(List<DemandeStatut> demandeStatuts) { this.demandeStatuts = demandeStatuts; }
 	public void setLieu(String lieu) { this.lieu = lieu; }
+	public void setReference(String reference) { this.reference = reference; }
 }

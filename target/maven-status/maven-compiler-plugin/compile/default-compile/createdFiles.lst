@@ -1,6 +1,7 @@
 model\Client.class
 controller\HomeController.class
 model\DemandeStatut.class
+service\TypeDevisService.class
 service\DevisStatutService.class
 repository\CommuneRepository.class
 repository\RegionRepository.class
@@ -16,10 +17,14 @@ model\Region.class
 repository\DevisRepository.class
 service\CommuneService.class
 model\DevisStatut.class
+model\DevisDetails.class
 repository\DistrictRepository.class
+connection\MySqlCleanupListener.class
 model\District.class
 repository\ClientRepository.class
 model\Devis.class
+service\DevisDetailsService.class
+repository\TypeDevisRepository.class
 service\DemandeService.class
 repository\DemandeStatutRepository.class
 connection\UtilDB.class
@@ -28,5 +33,7 @@ service\StatusService.class
 model\Status.class
 service\DevisService.class
 controller\DevisController.class
+model\TypeDevis.class
 service\RegionService.class
 repository\DevisStatutRepository.class
+repository\DevisDetailsRepository.class

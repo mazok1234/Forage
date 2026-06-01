@@ -30,14 +30,15 @@
         <table>
             <thead>
                 <tr>
+                    <th>Reference</th>
                     <th>ID</th>
                     <th>Client</th>
                     <th>Commune</th>
                     <th>Lieu</th>
                     <th>Statut</th>
                     <th>Date statut</th>
+                    <th>Duree (min)</th>
                     <th>Description</th>
-                    <th>Nouveau statut</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -45,6 +46,7 @@
                 <c:forEach var="demande" items="${demandes}">
                     <tr>
                         <c:set var="statutInfo" value="${latestStatuts[demande.id]}" />
+                        <td>${demande.reference}</td>
                         <td>${demande.id}</td>
                         <td>${demande.client.nom}</td>
                         <td>${demande.commune.libelle}</td>
@@ -63,21 +65,15 @@
                         </td>
                         <td>
                             <c:choose>
-                                <c:when test="${not empty statutInfo}">${statutInfo.description}</c:when>
+                                <c:when test="${not empty statutInfo}">${statutInfo.dureeTravail}</c:when>
                                 <c:otherwise>-</c:otherwise>
                             </c:choose>
                         </td>
                         <td>
-                            <form class="status-form" method="post" action="${pageContext.request.contextPath}/demande/status/${demande.id}">
-                                <select name="statusId" required>
-                                    <option value="">-- Statut --</option>
-                                    <c:forEach var="status" items="${statuses}">
-                                        <option value="${status.id}">${status.libelle}</option>
-                                    </c:forEach>
-                                </select>
-                                <input type="text" name="description" placeholder="Description">
-                                <button type="submit">Ajouter</button>
-                            </form>
+                            <c:choose>
+                                <c:when test="${not empty statutInfo}">${statutInfo.description}</c:when>
+                                <c:otherwise>-</c:otherwise>
+                            </c:choose>
                         </td>
                         <td class="action-links">
                             <a href="${pageContext.request.contextPath}/demande/edit/${demande.id}">Modifier</a>
@@ -94,8 +90,9 @@
 
 <div class="actions">
     <a href="${pageContext.request.contextPath}/demande/">Creer une nouvelle demande</a>
-    <a href="${pageContext.request.contextPath}/devis/demandes">Demandes approuvees</a>
-    <a href="${pageContext.request.contextPath}/devis/list">Liste des devis</a>
+    <a href="${pageContext.request.contextPath}/demande/statut">Statut</a>
+    <a href="${pageContext.request.contextPath}/demande/suivi">Suivi</a>
+    <a href="${pageContext.request.contextPath}/devis/create">Devis</a>
 </div>
 </body>
 </html>

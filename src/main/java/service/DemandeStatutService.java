@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.text.Normalizer;
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -29,17 +33,11 @@ public class DemandeStatutService {
 			.findTopByDemandeOrderByDateDescIdDesc(demande)
 			.orElse(null);
 		if (latest != null && latest.getDate() != null) {
-			Date clampedCurrent = clampToWorkWindow(effectiveDate);
-			Date clampedPrevious = clampToWorkWindow(latest.getDate());
-			long diffMs = clampedCurrent.getTime() - clampedPrevious.getTime();
-			long minutes = diffMs / 60000;
-			if (minutes < 0) {
-				minutes = 0;
-			}
-			durationMinutes = minutes > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) minutes;
+			durationMinutes = computeWorkingMinutes(latest.getDate(), effectiveDate);
 		}
 		DemandeStatut demandeStatut = new DemandeStatut(status, demande, description, effectiveDate);
 		demandeStatut.setDureeTravail(durationMinutes);
+		demandeStatut.setDureeTotal(isFinishedStatus(status) ? sumExistingDuration(demande, null) + durationMinutes : 0);
 		return demandeStatutRepository.save(demandeStatut);
 	}
 
@@ -52,33 +50,85 @@ public class DemandeStatutService {
 				.findTopByDemandeAndIdNotOrderByDateDescIdDesc(demande, demandeStatut.getId())
 				.orElse(null);
 			if (previous != null && previous.getDate() != null) {
-				Date clampedCurrent = clampToWorkWindow(effectiveDate);
-				Date clampedPrevious = clampToWorkWindow(previous.getDate());
-				long diffMs = clampedCurrent.getTime() - clampedPrevious.getTime();
-				long minutes = diffMs / 60000;
-				if (minutes < 0) {
-					minutes = 0;
-				}
-				durationMinutes = minutes > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) minutes;
+				durationMinutes = computeWorkingMinutes(previous.getDate(), effectiveDate);
 			}
 		}
 		demandeStatut.setStatut(status);
 		demandeStatut.setDescription(description);
 		demandeStatut.setDate(effectiveDate);
 		demandeStatut.setDureeTravail(durationMinutes);
+		demandeStatut.setDureeTotal(isFinishedStatus(status) ? sumExistingDuration(demande, demandeStatut.getId()) + durationMinutes : 0);
 		return demandeStatutRepository.save(demandeStatut);
 	}
 
-	private Date clampToWorkWindow(Date input) {
-		LocalDateTime dateTime = LocalDateTime.ofInstant(input.toInstant(), ZoneId.systemDefault());
-		LocalTime time = dateTime.toLocalTime();
-		if (time.isBefore(WORK_START)) {
-			time = WORK_START;
-		} else if (time.isAfter(WORK_END)) {
-			time = WORK_END;
+	private boolean isFinishedStatus(Status status) {
+		if (status == null || status.getLibelle() == null) {
+			return false;
 		}
-		LocalDateTime clamped = LocalDateTime.of(dateTime.toLocalDate(), time);
-		return Date.from(clamped.atZone(ZoneId.systemDefault()).toInstant());
+		String libelle = Normalizer.normalize(status.getLibelle().toLowerCase(), Normalizer.Form.NFD)
+			.replaceAll("\\p{M}", "");
+		return libelle.contains("termine");
+	}
+
+	private int sumExistingDuration(Demande demande, Long excludedId) {
+		if (demande == null) {
+			return 0;
+		}
+		long total = 0;
+		for (DemandeStatut statut : demandeStatutRepository.findByDemandeOrderByDateAscIdAsc(demande)) {
+			if (excludedId != null && excludedId.equals(statut.getId())) {
+				continue;
+			}
+			Integer duration = statut.getDureeTravail();
+			if (duration != null && duration > 0) {
+				total += duration;
+			}
+		}
+		return total > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) total;
+	}
+
+	private int computeWorkingMinutes(Date startDate, Date endDate) {
+		if (startDate == null || endDate == null) {
+			return 0;
+		}
+		LocalDateTime start = LocalDateTime.ofInstant(startDate.toInstant(), ZoneId.systemDefault());
+		LocalDateTime end = LocalDateTime.ofInstant(endDate.toInstant(), ZoneId.systemDefault());
+		if (end.isBefore(start)) {
+			return 0;
+		}
+		LocalDate current = start.toLocalDate();
+		LocalDate endDay = end.toLocalDate();
+		long minutes = 0;
+		while (!current.isAfter(endDay)) {
+			DayOfWeek dayOfWeek = current.getDayOfWeek();
+			if (dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY) {
+				LocalTime dayStart = WORK_START;
+				LocalTime dayEnd = WORK_END;
+				if (current.equals(start.toLocalDate())) {
+					LocalTime candidate = start.toLocalTime();
+					if (candidate.isAfter(dayStart)) {
+						dayStart = candidate;
+					}
+				}
+				if (current.equals(end.toLocalDate())) {
+					LocalTime candidate = end.toLocalTime();
+					if (candidate.isBefore(dayEnd)) {
+						dayEnd = candidate;
+					}
+				}
+				if (dayStart.isBefore(WORK_START)) {
+					dayStart = WORK_START;
+				}
+				if (dayEnd.isAfter(WORK_END)) {
+					dayEnd = WORK_END;
+				}
+				if (dayEnd.isAfter(dayStart)) {
+					minutes += Duration.between(dayStart, dayEnd).toMinutes();
+				}
+			}
+			current = current.plusDays(1);
+		}
+		return minutes > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) minutes;
 	}
 	public List<DemandeStatut> getAllDemandeStatuts() { return demandeStatutRepository.findAll(); }
 	public Optional<DemandeStatut> getDemandeStatutById(Long id) { return demandeStatutRepository.findById(id); }

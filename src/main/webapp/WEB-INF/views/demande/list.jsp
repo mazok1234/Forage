@@ -91,7 +91,8 @@
 <div class="actions">
     <a href="${pageContext.request.contextPath}/demande/">Creer une nouvelle demande</a>
     <a href="${pageContext.request.contextPath}/demande/statut">Statut</a>
-    <a href="${pageContext.request.contextPath}/demande/suivi">Suivi</a>
+    <!-- <a href="${pageContext.request.contextPath}/demande/suivi">Suivi</a> -->
+    <a href="http://localhost:8081/suivi.php">Suivi</a>
     <a href="${pageContext.request.contextPath}/devis/create">Devis</a>
 </div>
 </body>

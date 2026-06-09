@@ -55,10 +55,15 @@ CREATE TABLE IF NOT EXISTS demande_statut (
     id_statut BIGINT NOT NULL,
     id_demande BIGINT NOT NULL,
     duree_travail INT,
+    duree_total INT,
     description VARCHAR(500),
     date TIMESTAMP NOT NULL,
     FOREIGN KEY (id_statut) REFERENCES statut(id) ON DELETE CASCADE,
     FOREIGN KEY (id_demande) REFERENCES demande(id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS type_devis (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    libelle VARCHAR(255) NOT NULL
 );
 CREATE TABLE IF NOT EXISTS devis (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -68,10 +73,6 @@ CREATE TABLE IF NOT EXISTS devis (
     FOREIGN KEY (id_demande) REFERENCES demande(id) ON DELETE CASCADE,
     FOREIGN KEY (id_type_devis) REFERENCES type_devis(id) ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS type_devis (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    libelle VARCHAR(255) NOT NULL
-);
 CREATE TABLE IF NOT EXISTS devis_details (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     id_devis BIGINT NOT NULL,
@@ -80,10 +81,12 @@ CREATE TABLE IF NOT EXISTS devis_details (
     prix_unitaire DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (id_devis) REFERENCES devis(id) ON DELETE CASCADE
 );
+DROP TABLE IF EXISTS parametres;
 CREATE TABLE IF NOT EXISTS parametres(
     idStatut1 BIGINT NOT NULL,
     idStatut2 BIGINT NOT NULL,
-    duree_travail INT NOT NULL,
+    duree_min INT NOT NULL,
+    duree_max INT NOT NULL,
     alerte_couleur VARCHAR(200) NOT NULL
 );
 
@@ -92,9 +95,21 @@ CREATE TABLE IF NOT EXISTS parametres(
 INSERT IGNORE INTO region (id, libelle) VALUES (1, 'Analamanga');
 INSERT IGNORE INTO district (id, libelle, id_region) VALUES (1, 'Antananarivo', 1);
 INSERT IGNORE INTO commune (id, libelle, id_district) VALUES (1, 'Antananarivo', 1), (2, 'Avaradrano', 1);
-INSERT IGNORE INTO statut (id, libelle) VALUES (1, 'Cree'), (2, 'Demande_etude_cree'), (3, 'Demande_forage_cree'), (4, 'Devis_etude_cree'), (5, 'Devis_forage_cree'),(6, "Terminee");
+INSERT IGNORE INTO statut (id, libelle) VALUES 
+    (1, 'demande_etude_cree'),
+    (2, 'demande_etude_accepte'),
+    (3, 'demande_etude_refuse'),
+    (4, 'demande_forage_cree'),
+    (5, 'demande_forage_accepte'),
+    (6, 'demande_forage_refuse'),
+    (7, 'demande_travail_cree'),
+    (8, 'demande_travail_termine');
 INSERT IGNORE INTO type_devis (id, libelle) VALUES (1, 'Devis_etude'), (2, 'Devis_forage');
 INSERT IGNORE INTO client (id, nom, mdp, contact, adresse) VALUES (1, 'Jean', 'pass123', '+261341234567', 'Rue A, Tana');
 
-INSERT IGNORE INTO parametres (idStatut1, idStatut2, duree_travail, alerte_couleur) VALUES (1, 2, 10, 'red'), (2, 3, 72, 'orange'), (3, 4, 96, 'yellow'), (4, 5, 120, 'blue'), (5, 6, 144, 'green');
+INSERT IGNORE INTO parametres (idStatut1, idStatut2, duree_min, duree_max, alerte_couleur) VALUES
+    (1, 2, 0, 300, 'vert'),
+    (1, 2, 300, 600, 'rouge'),
+    (1, 4, 0, 400, 'vert'),
+    (1, 4, 400, 800, 'rouge');
 

@@ -28,6 +28,7 @@
                 <th>Reference</th>
                 <th>Client</th>
                 <th>Intervalles (couleur)</th>
+                <th>Duree totale</th>
             </tr>
         </thead>
         <tbody>
@@ -36,6 +37,7 @@
                     <td>${demande.reference}</td>
                     <td>${demande.client.nom}</td>
                     <td class="colors">Chargement...</td>
+                    <td class="total-hours">Chargement...</td>
                 </tr>
             </c:forEach>
         </tbody>
@@ -48,8 +50,10 @@ function loadAllColors() {
     rows.forEach(row => {
         const demandeId = row.dataset.id;
         const cell = row.querySelector('.colors');
+        const totalCell = row.querySelector('.total-hours');
         if (!demandeId) {
             cell.textContent = 'aucun';
+            totalCell.textContent = '0';
             return;
         }
         fetch('http://localhost:8081/statut_api.php?id_demande=' + encodeURIComponent(demandeId))
@@ -57,11 +61,16 @@ function loadAllColors() {
             .then(items => {
                 if (!Array.isArray(items) || items.length === 0) {
                     cell.textContent = 'aucun';
+                    totalCell.textContent = '0';
                     return;
                 }
                 const labels = [];
                 const seen = new Set();
+                let totalHours = 0;
                 items.forEach(item => {
+                    if (parseInt(item.id_statut, 10) === 8) {
+                        totalHours = parseFloat(item.duree_total_heures || 0);
+                    }
                     const color = (item.couleur || 'aucun').toLowerCase();
                     const intervalle = item.intervalle || '';
                     if (!intervalle || color === 'aucun') {
@@ -75,14 +84,16 @@ function loadAllColors() {
                 });
                 if (labels.length === 0) {
                     cell.textContent = 'aucun';
-                    return;
+                } else {
+                    cell.textContent = labels.map(item => {
+                        return item.intervalle + ' ' + item.color;
+                    }).join(', ');
                 }
-                cell.textContent = labels.map(item => {
-                    return item.intervalle + ' ' + item.color;
-                }).join(', ');
+                totalCell.textContent = totalHours > 0 ? totalHours.toFixed(2) + ' h' : '0';
             })
             .catch(() => {
                 cell.textContent = 'aucun';
+                totalCell.textContent = '0';
             });
     });
 }

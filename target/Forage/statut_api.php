@@ -28,7 +28,7 @@ try {
     );
 
     $statutStmt = $pdo->prepare(
-        'SELECT ds.id_statut, ds.duree_travail, ds.description, ds.date '
+        'SELECT ds.id_statut, ds.duree_travail, ds.duree_total, ds.description, ds.date '
         . 'FROM demande_statut ds '
         . 'WHERE ds.id_demande = ? '
         . 'ORDER BY ds.date ASC, ds.id ASC'
@@ -36,7 +36,7 @@ try {
     $statutStmt->execute([$idDemande]);
     $statuts = $statutStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $paramsStmt = $pdo->query('SELECT idStatut1, idStatut2, duree_travail, alerte_couleur FROM parametres');
+    $paramsStmt = $pdo->query('SELECT idStatut1, idStatut2, duree_min, duree_max, alerte_couleur FROM parametres');
     $params = [];
     foreach ($paramsStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $id1 = (int) $row['idStatut1'];
@@ -48,14 +48,15 @@ try {
             $params[$id1][$id2] = [];
         }
         $params[$id1][$id2][] = [
-            'duree' => (int) $row['duree_travail'],
+            'min' => (int) $row['duree_min'],
+            'max' => (int) $row['duree_max'],
             'couleur' => trim((string) $row['alerte_couleur'])
         ];
     }
     foreach ($params as $id1 => $pairs) {
         foreach ($pairs as $id2 => $values) {
             usort($values, function ($a, $b) {
-                return $a['duree'] <=> $b['duree'];
+                return $a['min'] <=> $b['min'];
             });
             $params[$id1][$id2] = $values;
         }
@@ -100,7 +101,7 @@ try {
                 $duree = $durationsByStart[$startId];
                 $candidate = 'aucun';
                 foreach ($thresholds as $threshold) {
-                    if ($duree > $threshold['duree']) {
+                    if ($duree >= $threshold['min'] && $duree < $threshold['max']) {
                         $candidate = $threshold['couleur'];
                     }
                 }
@@ -121,6 +122,8 @@ try {
         $result[] = [
             'id_statut' => $currentStatut,
             'duree_travail' => $row['duree_travail'] === null ? null : (int) $row['duree_travail'],
+            'duree_total' => $row['duree_total'] === null ? 0 : (int) $row['duree_total'],
+            'duree_total_heures' => $row['duree_total'] === null ? 0 : round(((int) $row['duree_total']) / 60, 2),
             'description' => $row['description'] ?? '',
             'date' => $row['date'],
             'couleur' => $color,

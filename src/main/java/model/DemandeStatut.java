@@ -26,6 +26,9 @@ public class DemandeStatut {
 	@Column(name = "duree_travail")
 	private Integer dureeTravail;
 
+	@Column(name = "duree_total")
+	private Integer dureeTotal;
+
 	@Column(name = "date", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
@@ -38,6 +41,7 @@ public class DemandeStatut {
 		this.description = description;
 		this.date = date;
 		this.dureeTravail = 0;
+		this.dureeTotal = 0;
 	}
 
 	public Long getId() { return id; }
@@ -45,11 +49,13 @@ public class DemandeStatut {
 	public Demande getDemande() { return demande; }
 	public String getDescription() { return description; }
 	public Integer getDureeTravail() { return dureeTravail; }
+	public Integer getDureeTotal() { return dureeTotal; }
 	public Date getDate() { return date; }
 
 	public void setStatut(Status statut) { this.statut = statut; }
 	public void setDemande(Demande demande) { this.demande = demande; }
 	public void setDescription(String description) { this.description = description; }
 	public void setDureeTravail(Integer dureeTravail) { this.dureeTravail = dureeTravail; }
+	public void setDureeTotal(Integer dureeTotal) { this.dureeTotal = dureeTotal; }
 	public void setDate(Date date) { this.date = date; }
 }
